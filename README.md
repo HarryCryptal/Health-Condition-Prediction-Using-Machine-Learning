@@ -75,6 +75,65 @@ to ensure minority classes receive appropriate attention during training.
 
 ---
 
+# Exploratory Data Analysis
+
+Before model development, extensive exploratory data analysis was performed to understand the dataset structure, feature distributions, and potential sources of predictive signal.
+
+The EDA process included:
+
+## Data Quality Analysis
+
+- Examined missing values across all features.
+- Analyzed missingness patterns and their relationship with health condition categories.
+- Identified whether missing values contained potential predictive information.
+
+## Feature Distribution Analysis
+
+Analyzed numerical feature distributions, including:
+
+- Sleep duration
+- Heart rate
+- BMI
+- Calorie expenditure
+- Step count
+- Exercise duration
+- Water intake
+
+Visualized distributions using histograms and density plots to identify:
+- Outliers
+- Skewed features
+- Unusual patterns
+
+## Relationship Between Features and Target
+
+Investigated relationships between features and `health_condition` through:
+
+- Class distribution analysis
+- Group-wise statistical summaries
+- Feature-target comparisons
+- Categorical feature frequency analysis
+
+Key observations included:
+
+- Significant class imbalance, with `at-risk` representing the majority of samples.
+- Lifestyle-related features such as step count, exercise duration, sleep quality, and BMI showed stronger relationships with health categories.
+- Missing values in certain health-related features showed different distributions across target classes, suggesting potential predictive value.
+
+## Correlation Analysis
+
+Performed correlation analysis on numerical variables to identify:
+
+- Highly related features
+- Potential redundant information
+- Possible feature engineering opportunities
+
+While most numerical correlations were moderate, combining related behavioral features was considered as a potential future improvement.
+
+## EDA Notebook
+
+The complete exploratory analysis can be found in:
+
+
 # Machine Learning Pipeline
 
 ```
@@ -83,7 +142,9 @@ health-condition-classification/
 ├── data/
 │   ├── train.csv
 │   └── test.csv
-│
+│  
+├── health_class_EDA.ipynb
+│  
 ├── lightGBM.ipynb
 │
 ├── submission.csv
@@ -95,7 +156,7 @@ health-condition-classification/
 
 ### 1. Data Preparation
 
-- Loaded and inspected dataset distributions.
+- Performed exploratory data analysis to understand data distributions, missing values, class imbalance, and feature relationships before model training.
 - Converted categorical variables into native LightGBM categorical features.
 - Separated numerical and categorical feature groups.
 
