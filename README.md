@@ -209,7 +209,7 @@ Install required dependencies:
 pip install numpy pandas scikit-learn lightgbm optuna matplotlib seaborn
 ```
 
-
+Due to dataset size and licensing considerations, the raw dataset is not included in this repository.
 ---
 
 # Running the Project
