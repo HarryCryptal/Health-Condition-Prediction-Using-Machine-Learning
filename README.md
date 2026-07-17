@@ -132,7 +132,16 @@ While most numerical correlations were moderate, combining related behavioral fe
 ## EDA Notebook
 
 The complete exploratory analysis can be found in:
-
+```
+health_class_EDA.ipynb
+```
+The notebook contains:
+- Data quality checks
+- Missing value analysis
+- Feature distribution visualizations
+- Target relationship analysis
+- Correlation exploration
+- Initial modeling considerations
 
 # Machine Learning Pipeline
 
