@@ -136,12 +136,14 @@ The complete exploratory analysis can be found in:
 health_class_EDA.ipynb
 ```
 The notebook contains:
-- Data quality checks
-- Missing value analysis
-- Feature distribution visualizations
-- Target relationship analysis
-- Correlation exploration
-- Initial modeling considerations
+- Dataset structure and data quality assessment
+- Missing value and duplicate analysis
+- Target variable distribution and class imbalance investigation
+- Numerical feature distribution analysis
+- Categorical feature distribution analysis
+- Feature relationship analysis with the target variable
+- Correlation analysis among numerical features
+- Identification of potential patterns, outliers, and modeling considerations
 
 # Machine Learning Pipeline
 
