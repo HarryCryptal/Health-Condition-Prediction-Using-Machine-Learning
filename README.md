@@ -1,93 +1,275 @@
-# 🏥 Health Condition Classification Pipeline
+# Health Condition Classification Using Machine Learning
 
-An end-to-end, high-performance machine learning pipeline built with **LightGBM** and **Optuna** to predict multi-class health conditions (`fit`, `at-risk`, `unhealthy`) from tabular lifestyle and clinical health data.
+An end-to-end machine learning pipeline for multi-class health condition classification using **LightGBM**, **Optuna**, and **Stratified Cross-Validation**.
 
-By implementing stratified cross-validation and targeted class-weight balancing, this pipeline successfully elevated baseline **OOF (Out-Of-Fold) Balanced Accuracy from ~0.88 to over 0.94**.
+The objective of this project is to predict three health condition categories:
 
----
+- `fit`
+- `at-risk`
+- `unhealthy`
 
-## 📊 Dataset Overview
+using demographic, behavioral, and lifestyle-related features.
 
-The dataset contains various demographic, clinical, and behavioral features of individuals:
-
-*   **Target:** `health_condition` (Classes: `fit`, `at-risk`, `unhealthy`)
-*   **Numerical Features:** Sleep duration, heart rate, BMI, calorie expenditure, step count, exercise duration, water intake.
-*   **Categorical Features:** Diet type, stress level, sleep quality, physical activity level, smoking/alcohol habits, gender.
-
-### ⚠️ Class Imbalance Challenge
-The training dataset suffers from an intense class imbalance:
-*   **at-risk**: ~85.9%
-*   **unhealthy**: ~8.4%
-*   **fit**: ~5.8%
-
-To combat this, the pipeline relies on **Balanced Accuracy** as the core metric and utilizes LightGBM's native `class_weight='balanced'` parameter.
+The project focuses on building a reliable classification pipeline while addressing challenges such as **class imbalance**, **model evaluation**, and **generalization**.
 
 ---
 
-## 🛠️ Pipeline Architecture
+# Dataset Overview
 
-This repository is organized into a clean, reproducible machine learning workflow:
+The dataset contains demographic and lifestyle features describing individuals.
 
+## Target Variable
+
+`health_condition`
+
+Classes:
+
+- Fit
+- At-risk
+- Unhealthy
+
+
+## Features
+
+### Numerical Features
+
+- Sleep duration
+- Heart rate
+- BMI
+- Calorie expenditure
+- Step count
+- Exercise duration
+- Water intake
+
+
+### Categorical Features
+
+- Diet type
+- Stress level
+- Sleep quality
+- Physical activity level
+- Smoking/alcohol habits
+- Gender
+
+
+---
+
+# Class Imbalance Challenge
+
+The dataset contains significant imbalance between classes:
+
+| Class | Percentage |
+|---|---:|
+| At-risk | ~85.9% |
+| Unhealthy | ~8.4% |
+| Fit | ~5.8% |
+
+Because accuracy can be misleading under heavy imbalance, this project uses:
+
+- **Balanced Accuracy**
+- **Stratified Cross-Validation**
+- **LightGBM class weighting**
+
+to ensure minority classes receive appropriate attention during training.
+
+
+---
+
+# Machine Learning Pipeline
+
+```
+health-condition-classification/
+│
 ├── data/
 │   ├── train.csv
 │   └── test.csv
-├── baseline.ipynb         # Main prototyping, tuning, and evaluation notebook
-├── submission.csv         # Generated test predictions
-└── README.md              # Project documentation
+│
+├── lightGBM.ipynb
+│
+├── submission.csv
+│
+└── README.md
+```
 
-### Key Workflow Stages:
-1. **Target & Categorical Encoding:** Automatic type conversion to pass categorical data natively to LightGBM.
-2. **Robust Cross-Validation:** 5-Fold Stratified Cross-Validation ensures fold splits maintain identical class ratios.
-3. **Automated Hyperparameter Search:** Uses **Optuna** to optimize learning rates, tree depth, and regularization limits over 50 trials.
-4. **Ensemble Inference:** Out-of-fold probability tracking and test prediction averaging across all trained fold-models to reduce variance.
+## Workflow
+
+### 1. Data Preparation
+
+- Loaded and inspected dataset distributions.
+- Converted categorical variables into native LightGBM categorical features.
+- Separated numerical and categorical feature groups.
+
+
+### 2. Stratified Cross-Validation
+
+Implemented **5-Fold Stratified Cross-Validation** to maintain consistent class distributions across validation folds.
+
+Benefits:
+
+- More reliable performance estimation.
+- Reduced variance from a single train/validation split.
+
+
+### 3. Handling Class Imbalance
+
+Compared:
+
+- Baseline LightGBM model.
+- Class-weight balanced LightGBM model.
+- Hyperparameter optimized model.
+
+
+### 4. Hyperparameter Optimization
+
+Used **Optuna** to optimize:
+
+- Learning rate
+- Number of leaves
+- Tree depth
+- Minimum child samples
+- Feature sampling
+- Regularization parameters
+
+
+### 5. Ensemble Prediction
+
+Generated predictions by:
+
+- Training a model on each CV fold.
+- Collecting out-of-fold predictions.
+- Averaging test predictions across fold models.
+
 
 ---
 
-## 🚀 Performance & Progress
+# Model Performance
 
-| Model Setup | Mean CV (Balanced Accuracy) | OOF BA |
-| :--- | :---: | :---: |
-| **Unweighted Baseline** | 0.87939 | 0.87939 |
-| **Balanced Class Weights** | 0.94728 | 0.94728 |
-| **Optuna Hyper-Tuned Model** | **0.94764** | **0.94764** |
+| Model | Balanced Accuracy |
+|---|---:|
+| Baseline LightGBM | 0.879 |
+| Class Weighted LightGBM | 0.947 |
+| Optuna Tuned LightGBM | **0.948** |
 
-### Optimized Hyperparameters (via Optuna)
-```python
-{
-    'learning_rate': 0.18596955222923703, 
-    'num_leaves': 29, 
-    'max_depth': 4, 
-    'min_child_samples': 11, 
-    'subsample': 0.8849762381207056, 
-    'colsample_bytree': 0.6492126685477961, 
-    'reg_alpha': 2.5742638697547786, 
-    'reg_lambda': 0.0013010403739248985
-}
+
+The results demonstrate that addressing class imbalance significantly improves minority-class recognition compared to an unweighted baseline model.
+
+
+---
+
+# Model Analysis
+
+## Confusion Matrix
+
+The normalized confusion matrix was used to analyze prediction behavior across all three classes.
+
+Key observation:
+
+- Class weighting reduced the tendency of the model to over-predict the majority `at-risk` class.
+- Minority classes received improved representation during prediction.
+
+
+## Feature Importance
+
+LightGBM feature importance was analyzed to understand which variables contributed most to classification decisions.
+
+Important features included:
+
+- Step count
+- BMI
+- Sleep quality
+- Exercise duration
+
+---
+
+# Responsible AI Considerations
+
+Although this project focuses on predictive modeling, health-related machine learning systems require careful consideration.
+
+Important limitations include:
+
+- The dataset is synthetic and may not represent real-world populations.
+- Feature importance does not imply causation.
+- Predictions should not be interpreted as medical diagnoses.
+- Models trained on imbalanced datasets may behave differently across demographic groups.
+
+Future work could explore:
+
+- Fairness evaluation across demographic groups.
+- Model interpretability techniques such as SHAP.
+- Robustness testing under distribution shifts.
+
+
+---
+
+# Installation
+
+Install required dependencies:
+
+```bash
+pip install numpy pandas scikit-learn lightgbm optuna matplotlib seaborn
 ```
 
-📈 Visual Insights
-1. Confusion Matrix
-The normalized confusion matrix shows that class balancing allows the model to predict rare classes (unhealthy and fit) with excellent recall, avoiding the common pitfall of collapsing onto the majority at-risk class.
 
-2. Feature Importance
-The LightGBM feature importance maps which health metrics dictate the classification decisions the most (e.g., step counts, BMI, sleep quality).
+---
 
-Quick Start
-1. Prerequisites
-Install the required packages:
-Bash
-pip install numpy pandas scikit-learn lightgbm optuna matplotlib seaborn
+# Running the Project
 
-3. How to Run
-Place your data files in a directory named data/ at the root of your project.
+1. Place dataset files inside:
 
-Run the baseline.ipynb notebook cell-by-cell.
+```
+data/
+├── train.csv
+└── test.csv
+```
 
-After execution, your final predictions will be exported as submission.csv in your root folder.
+2. Open:
 
-Future Enhancements
-Feature Engineering: Create synthetic health ratios (e.g., calories_per_step or sleep_efficiency indicators).
+```
+lightGBM.ipynb
+```
 
-Prior Correction: Test tuning raw predictions via threshold post-processing instead of class_weight='balanced'.
+3. Run all cells.
 
-Model Ensembling: Train companion CatBoost and XGBoost models and soft-vote their predictions.  
+The generated predictions will be saved as:
+
+```
+submission.csv
+```
+
+
+---
+
+# Future Improvements
+
+Potential improvements include:
+
+- Additional feature engineering:
+  - Calories per step
+  - Exercise consistency metrics
+  - Sleep efficiency indicators
+
+- Prediction calibration and post-processing:
+  - Threshold tuning
+  - Prior probability correction
+
+- Model comparison:
+  - CatBoost
+  - XGBoost
+  - Ensemble methods
+
+- Explainability:
+  - SHAP-based feature analysis
+
+
+---
+
+# Technologies Used
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- LightGBM
+- Optuna
+- Matplotlib
+- Seaborn
